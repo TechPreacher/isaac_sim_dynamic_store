@@ -11,6 +11,7 @@ This tool solves the problem of having to manually place products in a shop simu
 3. **Organizes products hierarchically** by category and shelf level
 4. **Enables physics simulation** for realistic product behavior
 5. **Sets initial velocities** for dynamic objects
+6. **🎲 Randomizes 3 products** with random rotations for variety each run
 
 ## 📁 Project Structure
 
@@ -77,6 +78,12 @@ The script places **25 products** across **8 categories**:
 - **🥫 Tomato Soup Cans** (3 items) - Static placement
   - `_05_tomato_soup_can_12`, `_05_tomato_soup_can_13`, `_05_tomato_soup_can_14`
 
+- **☕ Mugs** (3 items) - Physics enabled
+  - `_25_mug`, `_25_mug_01`, `_25_mug_02`
+  
+- **🧀 Mac-n-Cheese Boxes** (3 items) - Physics enabled
+  - `mac_n_cheese_centered`, `mac_n_cheese_centered_01`, `mac_n_cheese_centered_02`
+
 ## ⚡ Features
 
 ### Transform System
@@ -86,10 +93,12 @@ The script places **25 products** across **8 categories**:
 - **🎲 Random rotation**: Automatically randomizes 3 products with random but valid rotation values for variety
 
 ### Physics Integration
-- **Selective physics**: 10 products have physics enabled, 9 are static
-- **Collision detection**: ConvexHull approximation for realistic behavior
+- **Selective physics**: 16 products have physics enabled, 9 are static
+- **Enhanced collision detection**: ConvexHull and mesh collision for physics-enabled products
+- **Configuration options**: Global physics toggle and collision enforcement settings
 - **Initial motion**: Some products start with angular/linear velocities
 - **Rigid body dynamics**: Full IsaacSim physics simulation
+- **Fall-through prevention**: Comprehensive collision setup prevents products falling through surfaces
 
 ### Asset Management
 - **External references**: Uses YCB dataset from Omniverse content servers
@@ -109,24 +118,45 @@ The script places **25 products** across **8 categories**:
 - **Height levels**: Z coordinates 0.8-2.1 (ground to upper shelf)
 - **Scale**: 1.333x uniform scaling for all products
 
-### Asset URLs
-All products use official YCB (Yale-CMU-Berkeley) Object and Model Set:
-```
-https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/
-```
+### Asset Sources
+Products use two official Omniverse asset libraries:
+- **YCB Dataset**: Yale-CMU-Berkeley Object and Model Set (22 products)
+  ```
+  https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/
+  ```
+- **Isaac Props**: Isaac Sim food assets (3 Mac-n-Cheese products)
+  ```
+  https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/Food/
+  ```
 
 ### Scene Hierarchy
 ```
 /World/Shelf/
 ├── Items_Lower/
-│   ├── MustardBottles/
-│   ├── Spam/
-│   ├── TunaCans/
-│   └── Cleaner/
+│   ├── MustardBottles/    (3 items - static)
+│   ├── Spam/              (3 items - physics)
+│   ├── TunaCans/          (4 items - physics)
+│   └── Cleaner/           (3 items - physics)
 └── Items_Upper/
-    ├── Crackers/
-    └── TomatoCans/
+    ├── Crackers/          (3 items - static)
+    ├── TomatoCans/        (3 items - static)
+    ├── Mugs/              (3 items - physics)
+    └── Mac_n_Cheese/      (3 items - physics)
 ```
+
+## ⚙️ Configuration Options
+
+The script includes several configuration options at the top of `dynamic_shop_placer.py`:
+
+```python
+ENABLE_PHYSICS_FOR_ALL = True      # Set to False to make all products static
+FORCE_COLLISION_FOR_PHYSICS = True # Ensure collision detection for physics products
+```
+
+### Physics Troubleshooting
+- **Products falling through?** → Set `ENABLE_PHYSICS_FOR_ALL = False`
+- **Want realistic physics?** → Keep both options `True` (default)
+- **Console shows collision setup messages** → Physics working correctly
 
 ## 🎮 Usage Examples
 
@@ -195,7 +225,7 @@ python test_and_usage.py
 ```
 
 ### Test Results
-- ✅ **19 products validated** with complete transform data
+- ✅ **25 products validated** with complete transform data
 - ✅ **All required files present**
 - ✅ **Physics configuration verified**
 - ✅ **Asset URLs validated**
@@ -238,7 +268,7 @@ if self.debug:
 ## 📊 Performance Metrics
 
 - **Load time**: ~5-10 seconds (depending on network)
-- **Placement time**: ~2-3 seconds for all 19 products
+- **Placement time**: ~2-3 seconds for all 25 products
 - **Memory usage**: ~50-100MB additional (asset caching)
 - **Physics simulation**: 60 FPS with 10 dynamic objects
 
@@ -263,6 +293,8 @@ This project is provided as-is for educational and research purposes. Product as
 
 ## 🔄 Version History
 
+- **v1.2**: Added 6 new products (Mugs & Mac-n-Cheese), enhanced physics with collision detection, added configuration options
+- **v1.1**: Added randomization feature (3 random products get randomized rotations each run)
 - **v1.0**: Initial release with 19 products and full physics support
 - **v0.9**: Beta version with basic product placement
 - **v0.5**: Proof of concept with static products only
