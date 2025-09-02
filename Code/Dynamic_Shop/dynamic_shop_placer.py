@@ -25,6 +25,10 @@ from pathlib import Path
 
 BASE_PATH = "C:/Users/sascha/Code/Hackathon/Code/Dynamic_Shop/"
 
+# Configuration
+ENABLE_PHYSICS_FOR_ALL = True  # Set to False to make all products static (no physics)
+FORCE_COLLISION_FOR_PHYSICS = True  # Ensure collision detection for physics-enabled products
+
 # Product data extracted from Shop Minimal.usda
 PRODUCT_DATA = {
     # Mustard Bottles
@@ -368,8 +372,11 @@ class DynamicShopPlacer:
         else:
             xform.SetXformOpOrder([translate_op, scale_op])
         
-        # Add physics if enabled
-        if product_data.get("physics_enabled", False):
+        # Add physics if enabled (with global override option)
+        physics_enabled = product_data.get("physics_enabled", False) and ENABLE_PHYSICS_FOR_ALL
+        
+        if physics_enabled:
+            print(f"  Adding physics to {product_id}...")
             # Add RigidBody API
             rigid_body_api = UsdPhysics.RigidBodyAPI.Apply(product_prim)
             rigid_body_api.CreateRigidBodyEnabledAttr(True)
@@ -378,11 +385,42 @@ class DynamicShopPlacer:
             # Add Physx RigidBody API  
             physx_rb_api = PhysxSchema.PhysxRigidBodyAPI.Apply(product_prim)
             
+            # Add collision APIs - this is crucial for preventing fall-through
+            if FORCE_COLLISION_FOR_PHYSICS:
+                collision_api = UsdPhysics.CollisionAPI.Apply(product_prim)
+                collision_api.CreateCollisionEnabledAttr(True)
+                
+                # Add Physx collision APIs for better collision detection
+                physx_collision_api = PhysxSchema.PhysxCollisionAPI.Apply(product_prim)
+                
+                # Use convex hull approximation for realistic collision
+                # Try to find the mesh geometry in the loaded asset to apply collision to
+                stage = product_prim.GetStage()
+                for child_prim in product_prim.GetAllChildren():
+                    # Look for mesh geometry in the loaded asset
+                    if child_prim.GetTypeName() == "Mesh":
+                        mesh_collision_api = UsdPhysics.CollisionAPI.Apply(child_prim)
+                        mesh_collision_api.CreateCollisionEnabledAttr(True)
+                        physx_mesh_collision = PhysxSchema.PhysxCollisionAPI.Apply(child_prim)
+                        # Try to add convex hull collision
+                        try:
+                            convex_hull_api = PhysxSchema.PhysxConvexHullCollisionAPI.Apply(child_prim)
+                            print(f"    Added convex hull collision for {product_id}")
+                        except Exception as e:
+                            # Fallback to mesh collision if convex hull fails
+                            try:
+                                mesh_collision = PhysxSchema.PhysxMeshCollisionAPI.Apply(child_prim)
+                                print(f"    Added mesh collision for {product_id}")
+                            except Exception as e2:
+                                print(f"    Warning: Could not add collision to {product_id}: {e2}")
+            
             # Set initial velocities if provided
             if "velocity" in product_data:
                 rigid_body_api.CreateVelocityAttr(Gf.Vec3f(*product_data["velocity"]))
             if "angular_velocity" in product_data:
                 rigid_body_api.CreateAngularVelocityAttr(Gf.Vec3f(*product_data["angular_velocity"]))
+        else:
+            print(f"  {product_id} set as static (no physics)")
                 
         print(f"Placed product: {product_id} at {product_data['translate']}")
         return True
