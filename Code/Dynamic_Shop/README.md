@@ -7,7 +7,7 @@ A Python script that dynamically places products in an empty shop environment us
 This tool solves the problem of having to manually place products in a shop simulation. Instead of loading a pre-populated shop scene, it:
 
 1. **Loads an empty shop environment** (`Shop Minimal Empty.usda`)
-2. **Dynamically places 19 products** at their exact original positions
+2. **Dynamically places 25 products** at their exact original positions
 3. **Organizes products hierarchically** by category and shelf level
 4. **Enables physics simulation** for realistic product behavior
 5. **Sets initial velocities** for dynamic objects
@@ -55,7 +55,7 @@ python dynamic_shop_placer.py
 
 ## 🏪 Product Inventory
 
-The script places **19 products** across **6 categories**:
+The script places **25 products** across **8 categories**:
 
 ### Lower Shelf Items (`/World/Shelf/Items_Lower/`)
 - **🥇 Mustard Bottles** (3 items) - Static placement
@@ -83,6 +83,7 @@ The script places **19 products** across **6 categories**:
 - **Precise positioning**: Products placed at exact coordinates from original shop
 - **Dual rotation support**: Handles both Euler angles (`rotateZYX`) and quaternions (`orient`)
 - **Accurate scaling**: Maintains original size relationships
+- **🎲 Random rotation**: Automatically randomizes 3 products with random but valid rotation values for variety
 
 ### Physics Integration
 - **Selective physics**: 10 products have physics enabled, 9 are static

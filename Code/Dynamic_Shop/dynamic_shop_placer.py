@@ -4,6 +4,12 @@ Dynamic Shop Product Placer for IsaacSim
 This script loads the empty shop environment and dynamically places products
 at their original positions extracted from the populated shop USD file.
 
+Features:
+- Places 25 products from 8 categories across upper and lower shelves
+- Automatically randomizes rotation of 3 random products for variety
+- Supports both Euler angles and quaternion rotations
+- Enables physics simulation for realistic behavior
+
 Usage:
 - Run this script in IsaacSim
 - It will load the empty shop and populate it with products programmatically
@@ -13,6 +19,8 @@ import omni.usd
 from pxr import Usd, UsdGeom, Gf, UsdPhysics, PhysxSchema
 import asyncio
 import numpy as np
+import random
+import math
 from pathlib import Path
 
 BASE_PATH = "C:/Users/sascha/Code/Hackathon/Code/Dynamic_Shop/"
@@ -379,12 +387,71 @@ class DynamicShopPlacer:
         print(f"Placed product: {product_id} at {product_data['translate']}")
         return True
         
+    def randomize_product_rotations(self, product_data_dict, num_products=3):
+        """
+        Randomly select and randomize rotation properties of specified number of products.
+        
+        Args:
+            product_data_dict (dict): The product data dictionary to modify
+            num_products (int): Number of products to randomize (default: 3)
+        """
+        # Create a copy to avoid modifying the original
+        randomized_data = product_data_dict.copy()
+        
+        # Get list of product IDs
+        product_ids = list(randomized_data.keys())
+        
+        # Randomly select products to randomize
+        selected_products = random.sample(product_ids, min(num_products, len(product_ids)))
+        
+        print(f"Randomizing rotations for products: {selected_products}")
+        
+        for product_id in selected_products:
+            product_data = randomized_data[product_id].copy()
+            
+            # Generate random rotation values
+            if "rotate" in product_data or "orient" not in product_data:
+                # Use Euler angles (ZYX order) - generate random rotations in degrees
+                random_rotation = [
+                    random.uniform(-180, 180),  # X rotation
+                    random.uniform(-180, 180),  # Y rotation  
+                    random.uniform(-180, 180)   # Z rotation
+                ]
+                product_data["rotate"] = random_rotation
+                # Remove orient if it exists to avoid conflicts
+                if "orient" in product_data:
+                    del product_data["orient"]
+                print(f"  {product_id}: New rotation = {random_rotation}")
+            else:
+                # Generate random quaternion orientation
+                # Create random unit quaternion using Marsaglia method
+                u1, u2, u3 = random.random(), random.random(), random.random()
+                q1 = math.sqrt(1 - u1) * math.sin(2 * math.pi * u2)
+                q2 = math.sqrt(1 - u1) * math.cos(2 * math.pi * u2)
+                q3 = math.sqrt(u1) * math.sin(2 * math.pi * u3)
+                q0 = math.sqrt(u1) * math.cos(2 * math.pi * u3)
+                random_quat = [float(q0), float(q1), float(q2), float(q3)]  # (w, x, y, z)
+                
+                product_data["orient"] = random_quat
+                # Remove rotate if it exists to avoid conflicts
+                if "rotate" in product_data:
+                    del product_data["rotate"]
+                print(f"  {product_id}: New orientation = {random_quat}")
+            
+            # Update the data
+            randomized_data[product_id] = product_data
+            
+        return randomized_data
+        
     def place_all_products(self):
         """Place all products from the product data."""
         print("Placing all products...")
+        
+        # Randomize 3 products before placing
+        randomized_product_data = self.randomize_product_rotations(PRODUCT_DATA, num_products=3)
         success_count = 0
         
-        for product_id, product_data in PRODUCT_DATA.items():
+        for product_id, product_data in randomized_product_data.items():
             try:
                 if self.place_product(product_id, product_data):
                     success_count += 1
@@ -393,7 +460,7 @@ class DynamicShopPlacer:
             except Exception as e:
                 print(f"Error placing product {product_id}: {str(e)}")
                 
-        print(f"Successfully placed {success_count} out of {len(PRODUCT_DATA)} products")
+        print(f"Successfully placed {success_count} out of {len(randomized_product_data)} products")
         return success_count > 0
         
     def setup_scene_sync(self):
