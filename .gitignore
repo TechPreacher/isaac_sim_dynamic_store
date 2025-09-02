@@ -416,3 +416,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Python
+.venv/
+
+# Mac OS
+.DS_Store
