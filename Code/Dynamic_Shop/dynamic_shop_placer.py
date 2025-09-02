@@ -168,6 +168,52 @@ PRODUCT_DATA = {
         "rotate": (-90, 90, 0),
         "scale": (1.3333334, 1.3333334, 1.3333334),
         "physics_enabled": False
+    },
+    
+    # Mugs (YCB 025_mug)
+    "_25_mug": {
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/025_mug.usd",
+        "translate": (-25.175499984185052, 46.276673624249504, 1.9749321086551739),
+        "orient": (0.5, -0.5, -0.5, 0.5),  # quaternion
+        "scale": (1.3333334, 1.3333334, 1.3333334),
+        "physics_enabled": True
+    },
+    "_25_mug_01": {
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/025_mug.usd",
+        "translate": (-25.175499984185052, 46.475160695927464, 1.9749321086551632),
+        "orient": (0.5, -0.5, -0.5, 0.5),
+        "scale": (1.3333334, 1.3333334, 1.3333334),
+        "physics_enabled": True
+    },
+    "_25_mug_02": {
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/025_mug.usd",
+        "translate": (-25.17549998418508, 46.67496520109405, 1.9749321086551703),
+        "orient": (0.5, -0.5, -0.5, 0.5),
+        "scale": (1.3333334, 1.3333334, 1.3333334),
+        "physics_enabled": True
+    },
+    
+    # Mac-n-Cheese boxes
+    "mac_n_cheese_centered": {
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/Food/mac_n_cheese_centered.usd",
+        "translate": (-25.142441401793977, 47.01941769734744, 2.0412253468982846),
+        "orient": (0.5, 0.5, 0.5, 0.5),
+        "scale": (1.3333334, 1.3333334, 1.3333334),
+        "physics_enabled": True
+    },
+    "mac_n_cheese_centered_01": {
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/Food/mac_n_cheese_centered.usd",
+        "translate": (-25.142441401793977, 47.17668961095304, 2.041225346898267),
+        "orient": (0.5, 0.5, 0.5, 0.5),
+        "scale": (1.3333334, 1.3333334, 1.3333334),
+        "physics_enabled": True
+    },
+    "mac_n_cheese_centered_02": {
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/Food/mac_n_cheese_centered.usd",
+        "translate": (-25.142441401793977, 47.332832068128106, 2.041225346898265),
+        "orient": (0.5, 0.5, 0.5, 0.5),
+        "scale": (1.3333334, 1.3333334, 1.3333334),
+        "physics_enabled": True
     }
 }
 
@@ -260,7 +306,9 @@ class DynamicShopPlacer:
             "_07_tuna_fish_can": ("Items_Lower", "TunaCans"),
             "_21_bleach_cleanser": ("Items_Lower", "Cleaner"),
             "_03_cracker_box": ("Items_Upper", "Crackers"),
-            "_05_tomato_soup_can": ("Items_Upper", "TomatoCans")
+            "_05_tomato_soup_can": ("Items_Upper", "TomatoCans"),
+            "_25_mug": ("Items_Upper", "Mugs"),
+            "mac_n_cheese": ("Items_Upper", "Mac_n_Cheese")
         }
         
         # Find the category for this product
