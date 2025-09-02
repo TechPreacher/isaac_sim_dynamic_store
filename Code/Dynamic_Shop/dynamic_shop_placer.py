@@ -177,15 +177,29 @@ class DynamicShopPlacer:
     
     def __init__(self):
         self.stage = omni.usd.get_context().get_stage()
-        base_file = Path(BASE_PATH / "./assets/Shop Minimal Empty.usda" )
-        self.empty_shop_path = base_file
+        base_file = Path(BASE_PATH) / "assets" / "Shop Minimal Empty.usda"
+        self.empty_shop_path = str(base_file)
+        
+    def load_empty_shop_sync(self):
+        """Synchronous version of load_empty_shop for easier testing."""
+        print("Loading empty shop environment...")
+        
+        # Open the empty shop USD file
+        success = omni.usd.get_context().open_stage(str(self.empty_shop_path))
+        if not success:
+            print(f"Failed to load empty shop from: {self.empty_shop_path}")
+            return False
+            
+        self.stage = omni.usd.get_context().get_stage()
+        print(f"Successfully loaded empty shop: {self.empty_shop_path}")
+        return True
         
     async def load_empty_shop(self):
         """Load the empty shop USD file as the base environment."""
         print("Loading empty shop environment...")
         
         # Open the empty shop USD file
-        success = await omni.usd.get_context().open_stage_async(self.empty_shop_path)
+        success = await omni.usd.get_context().open_stage_async(str(self.empty_shop_path))
         if not success:
             print(f"Failed to load empty shop from: {self.empty_shop_path}")
             return False
@@ -270,30 +284,33 @@ class DynamicShopPlacer:
         # Create Xform for transforms
         xform = UsdGeom.Xform(product_prim)
         
-        # Set transform operations
+        # Clear any existing transform operations to avoid conflicts
+        xform.ClearXformOpOrder()
+        
+        # Set transform operations - simply add them (since we cleared existing ops)
         translate_op = xform.AddTranslateOp()
         translate_op.Set(Gf.Vec3d(*product_data["translate"]))
         
-        scale_op = xform.AddScaleOp()  
+        scale_op = xform.AddScaleOp()
         scale_op.Set(Gf.Vec3f(*product_data["scale"]))
         
         # Handle rotation - some products use rotateZYX, others use orient (quaternion)
         if "rotate" in product_data:
             # Use Euler rotation (ZYX order)
-            rotate_op = xform.AddRotateZYXOp()
-            rotate_op.Set(Gf.Vec3f(*product_data["rotate"]))
+            rotation_op = xform.AddRotateZYXOp()
+            rotation_op.Set(Gf.Vec3f(*product_data["rotate"]))
         elif "orient" in product_data:
             # Use quaternion orientation
-            orient_op = xform.AddOrientOp()
+            rotation_op = xform.AddOrientOp()
             quat_data = product_data["orient"]
             # Convert (w,x,y,z) to Gf.Quatf(w, Gf.Vec3f(x,y,z))
-            orient_op.Set(Gf.Quatf(quat_data[0], Gf.Vec3f(quat_data[1], quat_data[2], quat_data[3])))
+            rotation_op.Set(Gf.Quatf(quat_data[0], Gf.Vec3f(quat_data[1], quat_data[2], quat_data[3])))
             
-        # Set transform order
-        if "rotate" in product_data:
-            xform.SetXformOpOrder([translate_op, rotate_op, scale_op])
+        # Set transform order with the operations we have
+        if rotation_op:
+            xform.SetXformOpOrder([translate_op, rotation_op, scale_op])
         else:
-            xform.SetXformOpOrder([translate_op, orient_op, scale_op])
+            xform.SetXformOpOrder([translate_op, scale_op])
         
         # Add physics if enabled
         if product_data.get("physics_enabled", False):
@@ -331,6 +348,28 @@ class DynamicShopPlacer:
         print(f"Successfully placed {success_count} out of {len(PRODUCT_DATA)} products")
         return success_count > 0
         
+    def setup_scene_sync(self):
+        """Synchronous version of setup_scene for easier execution in Isaac Sim."""
+        print("Starting dynamic shop setup...")
+        
+        # Load empty shop
+        if not self.load_empty_shop_sync():
+            print("Failed to load empty shop!")
+            return False
+            
+        # Create product hierarchy
+        if not self.create_product_hierarchy():
+            print("Failed to create product hierarchy!")
+            return False
+            
+        # Place all products
+        if not self.place_all_products():
+            print("Failed to place products!")
+            return False
+            
+        print("Dynamic shop setup completed successfully!")
+        return True
+        
     async def setup_scene(self):
         """Main method to set up the complete scene."""
         print("Starting dynamic shop setup...")
@@ -363,5 +402,19 @@ if __name__ == "__main__":
     print("Dynamic Shop Product Placer")
     print("Loading empty shop and placing products dynamically...")
     
-    # Run the async main function
-    asyncio.ensure_future(main())
+    # Create and run the placer synchronously (works better in Isaac Sim Script Editor)
+    placer = DynamicShopPlacer()
+    
+    try:
+        result = placer.setup_scene_sync()
+        if result:
+            print("✅ SUCCESS: Dynamic shop setup completed!")
+            print("Check the viewport - products should now be visible on the shelves.")
+        else:
+            print("❌ FAILED: Dynamic shop setup encountered errors.")
+            print("Check the console output above for details.")
+    except Exception as e:
+        print(f"❌ ERROR: Script execution failed: {str(e)}")
+        print("This might be due to missing files or Isaac Sim API issues.")
+        
+    print("\nScript execution finished.")
