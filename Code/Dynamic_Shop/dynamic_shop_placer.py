@@ -89,97 +89,45 @@ class DynamicShopPlacer:
         return True
         
     def create_product_hierarchy(self):
-        """Create the product hierarchy structure in the stage."""
+        """Create the product hierarchy structure in the stage based on JSON metadata."""
         # Create the main product containers
         shelf_prim = self.stage.GetPrimAtPath("/World/Shelf")
         if not shelf_prim:
             print("Warning: Could not find /World/Shelf in the loaded stage")
             return False
+        
+        # Collect unique shelf levels and categories from product data
+        shelf_categories = {}
+        
+        for product_id, product_data in PRODUCT_DATA.items():
+            shelf = product_data.get("shelf", "Items_Lower")  # Default fallback
+            category = product_data.get("category", "Unknown")  # Default fallback
             
-        # Create Items_Lower scope
-        items_lower_path = "/World/Shelf/Items_Lower"
-        items_lower = UsdGeom.Scope.Define(self.stage, items_lower_path)
+            if shelf not in shelf_categories:
+                shelf_categories[shelf] = set()
+            shelf_categories[shelf].add(category)
         
-        # Create product category scopes
-        categories = {
-            "MustardBottles": ["mustard_bottle_1", "mustard_bottle_2", "mustard_bottle_3"],
-            "Spam": ["potted_meat_can_1", "potted_meat_can_2", "potted_meat_can_3"],
-            "TunaCans": ["tuna_fish_can_1", "tuna_fish_can_2", "tuna_fish_can_3", "tuna_fish_can_4"],
-            "Cleaner": ["bleach_cleanser_1", "bleach_cleanser_2", "bleach_cleanser_3"]
-        }
-        
-        # Create Items_Upper scope
-        items_upper_path = "/World/Shelf/Items_Upper"
-        items_upper = UsdGeom.Scope.Define(self.stage, items_upper_path)
-        
-        # Upper shelf categories
-        upper_categories = {
-            "Crackers": ["cracker_box_1", "cracker_box_2", "cracker_box_3"],
-            "TomatoCans": ["tomato_soup_can_1", "tomato_soup_can_2", "tomato_soup_can_3"],
-            "Mugs": ["mug_1", "mug_2", "mug_3"],
-            "Mac_n_Cheese": ["mac_n_cheese_1", "mac_n_cheese_2", "mac_n_cheese_3"]
-        }
-        
-        # Create Items_Top scope
-        items_top_path = "/World/Shelf/Items_Top"
-        items_top = UsdGeom.Scope.Define(self.stage, items_top_path)
-        
-        # Top shelf categories
-        top_categories = {
-            "MasterChefCan": ["master_chef_can_1", "master_chef_can_2", "master_chef_can_3"],
-            "Bowl": ["bowl_1", "bowl_2", "bowl_3"],
-            "TopMugs": ["sm_mug_1", "sm_mug_2", "sm_mug_3"],
-            "Pudding": ["pudding_box_1", "pudding_box_2", "pudding_box_3"]
-        }
-        
-        # Create category scopes for lower shelf
-        for category, products in categories.items():
-            category_path = f"{items_lower_path}/{category}"
-            UsdGeom.Scope.Define(self.stage, category_path)
+        # Create shelf level scopes and category scopes dynamically
+        for shelf_level, categories in shelf_categories.items():
+            # Create shelf level scope (e.g., Items_Lower, Items_Upper, Items_Top)
+            shelf_path = f"/World/Shelf/{shelf_level}"
+            UsdGeom.Scope.Define(self.stage, shelf_path)
             
-        # Create category scopes for upper shelf  
-        for category, products in upper_categories.items():
-            category_path = f"{items_upper_path}/{category}"
-            UsdGeom.Scope.Define(self.stage, category_path)
-            
-        # Create category scopes for top shelf
-        for category, products in top_categories.items():
-            category_path = f"{items_top_path}/{category}"
-            UsdGeom.Scope.Define(self.stage, category_path)
-            
-        print("Created product hierarchy structure")
+            # Create category scopes within this shelf level
+            for category in categories:
+                category_path = f"{shelf_path}/{category}"
+                UsdGeom.Scope.Define(self.stage, category_path)
+        
+        print(f"Created product hierarchy structure for {len(shelf_categories)} shelf levels")
+        print(f"Shelf levels: {list(shelf_categories.keys())}")
         return True
         
     def place_product(self, product_id, product_data):
         """Place a single product in the scene with proper transforms and physics."""
-        # Determine the category and shelf level
-        category_map = {
-            "mustard_bottle": ("Items_Lower", "MustardBottles"),
-            "potted_meat_can": ("Items_Lower", "Spam"),
-            "tuna_fish_can": ("Items_Lower", "TunaCans"),
-            "bleach_cleanser": ("Items_Lower", "Cleaner"),
-            "cracker_box": ("Items_Upper", "Crackers"),
-            "tomato_soup_can": ("Items_Upper", "TomatoCans"),
-            "mug": ("Items_Upper", "Mugs"),
-            "mac_n_cheese": ("Items_Upper", "Mac_n_Cheese"),
-            "master_chef_can": ("Items_Top", "MasterChefCan"),
-            "bowl": ("Items_Top", "Bowl"),
-            "sm_mug": ("Items_Top", "TopMugs"),
-            "pudding_box": ("Items_Top", "Pudding")
-        }
+        # Get shelf and category from product metadata
+        shelf_level = product_data.get("shelf", "Items_Lower")  # Default fallback
+        category = product_data.get("category", "Unknown")  # Default fallback
         
-        # Find the category for this product
-        product_category = None
-        for prefix, (shelf_level, category) in category_map.items():
-            if product_id.startswith(prefix):
-                product_category = (shelf_level, category)
-                break
-                
-        if not product_category:
-            print(f"Warning: Could not determine category for product {product_id}")
-            return False
-            
-        shelf_level, category = product_category
         product_path = f"/World/Shelf/{shelf_level}/{category}/{product_id}"
         
         # Create the product prim with payload reference
@@ -275,7 +223,7 @@ class DynamicShopPlacer:
         else:
             print(f"  {product_id} set as static (no physics)")
                 
-        print(f"Placed product: {product_id} at {product_data['translate']}")
+        print(f"Placed product: {product_id} at {product_data['translate']} (shelf: {shelf_level}, category: {category})")
         return True
         
     def randomize_product_rotations(self, product_data_dict, num_products=3):
