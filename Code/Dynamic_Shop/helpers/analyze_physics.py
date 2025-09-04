@@ -1,23 +1,41 @@
 #!/usr/bin/env python3
 """
-Check the actual physics settings for all products
+Check the actual physics settings for all products by reading from JSON data
 """
 
-import re
+import json
+import sys
+from pathlib import Path
+
+# Add parent directory to path to access main project files
+sys.path.append(str(Path(__file__).parent.parent))
+
+# Base path is now the parent directory
+BASE_PATH = Path(__file__).parent.parent
+
+def load_product_data():
+    """Load product data from JSON file."""
+    json_file_path = BASE_PATH / "assets" / "product_data.json"
+    try:
+        with open(json_file_path, 'r') as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"ERROR: Failed to load product data: {e}")
+        return {}
 
 def analyze_physics_settings():
-    with open('dynamic_shop_placer.py', 'r', encoding='utf-8') as f:
-        content = f.read()
+    """Analyze physics settings from the product data."""
+    product_data = load_product_data()
     
-    # Extract all product entries with their physics settings
-    pattern = r'"([^"]+)":\s*{[^}]*"physics_enabled":\s*(True|False)[^}]*}'
-    matches = re.findall(pattern, content, re.DOTALL)
+    if not product_data:
+        print("❌ Failed to load product data")
+        return
     
     physics_enabled = []
     physics_disabled = []
     
-    for product_name, setting in matches:
-        if setting == 'True':
+    for product_name, data in product_data.items():
+        if data.get("physics_enabled", False):
             physics_enabled.append(product_name)
         else:
             physics_disabled.append(product_name)

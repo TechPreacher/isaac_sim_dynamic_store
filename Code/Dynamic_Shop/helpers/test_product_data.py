@@ -4,13 +4,18 @@ without Isaac Sim dependencies.
 """
 
 import json
+import sys
 from pathlib import Path
 
-BASE_PATH = "C:/Users/sascha/Code/Hackathon/Code/Dynamic_Shop/"
+# Add parent directory to path to access main project files
+sys.path.append(str(Path(__file__).parent.parent))
+
+# Base path is now the parent directory
+BASE_PATH = Path(__file__).parent.parent
 
 def load_product_data():
     """Load product data from JSON file."""
-    json_file_path = Path(BASE_PATH) / "assets" / "product_data.json"
+    json_file_path = BASE_PATH / "assets" / "product_data.json"
     try:
         with open(json_file_path, 'r') as f:
             product_data = json.load(f)

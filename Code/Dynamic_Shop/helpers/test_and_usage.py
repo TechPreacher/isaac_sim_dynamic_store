@@ -4,6 +4,17 @@ Test Runner and Usage Instructions for Dynamic Shop Placer
 This script provides instructions and test functionality for the dynamic shop placer.
 """
 
+import json
+import os
+import sys
+from pathlib import Path
+
+# Add parent directory to path to access main project files
+sys.path.append(str(Path(__file__).parent.parent))
+
+# Base path is now the parent directory
+BASE_PATH = Path(__file__).parent.parent
+
 # Usage Instructions:
 """
 HOW TO USE THE DYNAMIC SHOP PLACER IN ISAAC SIM:
@@ -26,13 +37,15 @@ HOW TO USE THE DYNAMIC SHOP PLACER IN ISAAC SIM:
 3. WHAT THE SCRIPT DOES:
    - Loads the empty shop USD file (Shop Minimal Empty.usda)
    - Creates the product hierarchy (Items_Lower/Items_Upper with categories)
-   - Places 18 products with exact transforms from the original shop:
+   - Places 25 products with exact transforms from the original shop:
      * 3 Mustard Bottles (lower shelf)
      * 3 Spam Cans (lower shelf, with physics)
      * 4 Tuna Cans (lower shelf, with physics)
      * 3 Bleach Cleanser bottles (lower shelf, with physics + velocities)
      * 3 Cracker Boxes (upper shelf)
      * 3 Tomato Soup Cans (upper shelf)
+     * 3 Mugs (upper shelf, with physics)
+     * 3 Mac-n-Cheese boxes (upper shelf, with physics)
 
 4. PRODUCT CATEGORIES AND LOCATIONS:
    - Lower Shelf (/World/Shelf/Items_Lower/):
@@ -44,6 +57,8 @@ HOW TO USE THE DYNAMIC SHOP PLACER IN ISAAC SIM:
    - Upper Shelf (/World/Shelf/Items_Upper/):
      * Crackers/ - 3 cracker boxes
      * TomatoCans/ - 3 tomato soup cans
+     * Mugs/ - 3 mugs with physics
+     * Mac_n_Cheese/ - 3 mac-n-cheese boxes with physics
 
 5. PHYSICS PROPERTIES:
    - Some products have rigid body physics enabled
@@ -68,7 +83,7 @@ HOW TO USE THE DYNAMIC SHOP PLACER IN ISAAC SIM:
    - If physics doesn't work, ensure IsaacSim physics is enabled
 
 9. CUSTOMIZATION:
-   - Modify PRODUCT_DATA dictionary to add/remove/move products
+   - Modify assets/product_data.json to add/remove/move products
    - Change asset URLs to use different products
    - Adjust physics properties per product
    - Modify hierarchy structure in create_product_hierarchy()
@@ -80,10 +95,23 @@ HOW TO USE THE DYNAMIC SHOP PLACER IN ISAAC SIM:
     - Physics-enabled products responding to gravity and collisions
 """
 
-# Test function to verify script components
+def load_product_data():
+    """Load product data from JSON file."""
+    json_file_path = BASE_PATH / "assets" / "product_data.json"
+    try:
+        with open(json_file_path, 'r') as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"ERROR: Failed to load product data: {e}")
+        return {}
+
 def test_product_data_integrity():
     """Test function to verify product data is properly structured."""
-    from dynamic_shop_placer import PRODUCT_DATA
+    product_data = load_product_data()
+    
+    if not product_data:
+        print("❌ Failed to load product data")
+        return False
     
     print("Testing product data integrity...")
     
@@ -93,7 +121,7 @@ def test_product_data_integrity():
     
     issues = []
     
-    for product_id, data in PRODUCT_DATA.items():
+    for product_id, data in product_data.items():
         # Check required fields
         for field in required_fields:
             if field not in data:
@@ -123,18 +151,22 @@ def test_product_data_integrity():
             print(f"  - {issue}")
         return False
     else:
-        print(f"✅ Product data integrity test PASSED - {len(PRODUCT_DATA)} products validated")
+        print(f"✅ Product data integrity test PASSED - {len(product_data)} products validated")
         return True
 
 def print_product_summary():
     """Print a summary of all products that will be placed."""
-    from dynamic_shop_placer import PRODUCT_DATA
+    product_data = load_product_data()
+    
+    if not product_data:
+        print("❌ Cannot print summary - failed to load product data")
+        return
     
     print("\n=== PRODUCT PLACEMENT SUMMARY ===")
     
     # Categorize products
     categories = {}
-    for product_id, data in PRODUCT_DATA.items():
+    for product_id, data in product_data.items():
         # Determine category from product ID
         if "_06_mustard_bottle" in product_id:
             category = "Mustard Bottles (Lower)"
@@ -148,6 +180,10 @@ def print_product_summary():
             category = "Cracker Boxes (Upper)"
         elif "_05_tomato_soup_can" in product_id:
             category = "Tomato Soup Cans (Upper)"
+        elif "_25_mug" in product_id:
+            category = "Mugs (Upper)"
+        elif "mac_n_cheese" in product_id:
+            category = "Mac-n-Cheese (Upper)"
         else:
             category = "Other"
             
@@ -177,36 +213,35 @@ def print_product_summary():
 
 def check_file_structure():
     """Check if required files exist."""
-    import os
-    
     print("\n=== FILE STRUCTURE CHECK ===")
     
     required_files = [
-        "./assets/Shop Minimal Empty.usda",
-        "dynamic_shop_placer.py"
+        BASE_PATH / "assets" / "Shop Minimal Empty.usda",
+        BASE_PATH / "dynamic_shop_placer.py",
+        BASE_PATH / "assets" / "product_data.json"
     ]
     
     optional_files = [
-        "./assets/Shop Minimal.usda",
-        "./assets/product_data.txt"
+        BASE_PATH / "assets" / "Shop Minimal.usda",
+        BASE_PATH / "assets" / "product_data.txt"
     ]
     
     all_good = True
     
     print("Required files:")
     for file_path in required_files:
-        if os.path.exists(file_path):
-            print(f"  ✅ {file_path}")
+        if file_path.exists():
+            print(f"  ✅ {file_path.name}")
         else:
-            print(f"  ❌ {file_path} - MISSING!")
+            print(f"  ❌ {file_path.name} - MISSING!")
             all_good = False
     
     print("\nOptional files (for reference):")
     for file_path in optional_files:
-        if os.path.exists(file_path):
-            print(f"  ✅ {file_path}")
+        if file_path.exists():
+            print(f"  ✅ {file_path.name}")
         else:
-            print(f"  ❓ {file_path} - not found")
+            print(f"  ❓ {file_path.name} - not found")
     
     return all_good
 
