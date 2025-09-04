@@ -5,7 +5,7 @@ This script loads the empty shop environment and dynamically places products
 at their original positions extracted from the populated shop USD file.
 
 Features:
-- Places 25 products from 8 categories across upper and lower shelves
+- Places 37 products from 12 categories across lower, upper, and top shelves
 - Automatically randomizes rotation of 3 random products for variety
 - Supports both Euler angles and quaternion rotations
 - Enables physics simulation for realistic behavior
@@ -102,10 +102,10 @@ class DynamicShopPlacer:
         
         # Create product category scopes
         categories = {
-            "MustardBottles": ["_06_mustard_bottle_05", "_06_mustard_bottle_06", "_06_mustard_bottle_08"],
-            "Spam": ["_10_potted_meat_can_24", "_10_potted_meat_can_26", "_10_potted_meat_can_27"],
-            "TunaCans": ["_07_tuna_fish_can_61", "_07_tuna_fish_can_62", "_07_tuna_fish_can_63", "_07_tuna_fish_can_64"],
-            "Cleaner": ["_21_bleach_cleanser_03", "_21_bleach_cleanser_04", "_21_bleach_cleanser_06"]
+            "MustardBottles": ["mustard_bottle_1", "mustard_bottle_2", "mustard_bottle_3"],
+            "Spam": ["potted_meat_can_1", "potted_meat_can_2", "potted_meat_can_3"],
+            "TunaCans": ["tuna_fish_can_1", "tuna_fish_can_2", "tuna_fish_can_3", "tuna_fish_can_4"],
+            "Cleaner": ["bleach_cleanser_1", "bleach_cleanser_2", "bleach_cleanser_3"]
         }
         
         # Create Items_Upper scope
@@ -114,8 +114,22 @@ class DynamicShopPlacer:
         
         # Upper shelf categories
         upper_categories = {
-            "Crackers": ["_03_cracker_box_03", "_03_cracker_box_04", "_03_cracker_box_05"],
-            "TomatoCans": ["_05_tomato_soup_can_12", "_05_tomato_soup_can_13", "_05_tomato_soup_can_14"]
+            "Crackers": ["cracker_box_1", "cracker_box_2", "cracker_box_3"],
+            "TomatoCans": ["tomato_soup_can_1", "tomato_soup_can_2", "tomato_soup_can_3"],
+            "Mugs": ["mug_1", "mug_2", "mug_3"],
+            "Mac_n_Cheese": ["mac_n_cheese_1", "mac_n_cheese_2", "mac_n_cheese_3"]
+        }
+        
+        # Create Items_Top scope
+        items_top_path = "/World/Shelf/Items_Top"
+        items_top = UsdGeom.Scope.Define(self.stage, items_top_path)
+        
+        # Top shelf categories
+        top_categories = {
+            "MasterChefCan": ["master_chef_can_1", "master_chef_can_2", "master_chef_can_3"],
+            "Bowl": ["bowl_1", "bowl_2", "bowl_3"],
+            "TopMugs": ["sm_mug_1", "sm_mug_2", "sm_mug_3"],
+            "Pudding": ["pudding_box_1", "pudding_box_2", "pudding_box_3"]
         }
         
         # Create category scopes for lower shelf
@@ -128,6 +142,11 @@ class DynamicShopPlacer:
             category_path = f"{items_upper_path}/{category}"
             UsdGeom.Scope.Define(self.stage, category_path)
             
+        # Create category scopes for top shelf
+        for category, products in top_categories.items():
+            category_path = f"{items_top_path}/{category}"
+            UsdGeom.Scope.Define(self.stage, category_path)
+            
         print("Created product hierarchy structure")
         return True
         
@@ -135,14 +154,18 @@ class DynamicShopPlacer:
         """Place a single product in the scene with proper transforms and physics."""
         # Determine the category and shelf level
         category_map = {
-            "_06_mustard_bottle": ("Items_Lower", "MustardBottles"),
-            "_10_potted_meat_can": ("Items_Lower", "Spam"),
-            "_07_tuna_fish_can": ("Items_Lower", "TunaCans"),
-            "_21_bleach_cleanser": ("Items_Lower", "Cleaner"),
-            "_03_cracker_box": ("Items_Upper", "Crackers"),
-            "_05_tomato_soup_can": ("Items_Upper", "TomatoCans"),
-            "_25_mug": ("Items_Upper", "Mugs"),
-            "mac_n_cheese": ("Items_Upper", "Mac_n_Cheese")
+            "mustard_bottle": ("Items_Lower", "MustardBottles"),
+            "potted_meat_can": ("Items_Lower", "Spam"),
+            "tuna_fish_can": ("Items_Lower", "TunaCans"),
+            "bleach_cleanser": ("Items_Lower", "Cleaner"),
+            "cracker_box": ("Items_Upper", "Crackers"),
+            "tomato_soup_can": ("Items_Upper", "TomatoCans"),
+            "mug": ("Items_Upper", "Mugs"),
+            "mac_n_cheese": ("Items_Upper", "Mac_n_Cheese"),
+            "master_chef_can": ("Items_Top", "MasterChefCan"),
+            "bowl": ("Items_Top", "Bowl"),
+            "sm_mug": ("Items_Top", "TopMugs"),
+            "pudding_box": ("Items_Top", "Pudding")
         }
         
         # Find the category for this product
