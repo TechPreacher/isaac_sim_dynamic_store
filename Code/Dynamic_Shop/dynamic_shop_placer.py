@@ -215,26 +215,34 @@ class DynamicShopPlacer:
                 # Add Physx collision APIs for better collision detection
                 physx_collision_api = PhysxSchema.PhysxCollisionAPI.Apply(product_prim)
                 
-                # Use convex hull approximation for realistic collision
+                # Use convex hull approximation for realistic collision on dynamic objects
                 # Try to find the mesh geometry in the loaded asset to apply collision to
                 stage = product_prim.GetStage()
+                collision_applied = False
+                
                 for child_prim in product_prim.GetAllChildren():
                     # Look for mesh geometry in the loaded asset
                     if child_prim.GetTypeName() == "Mesh":
                         mesh_collision_api = UsdPhysics.CollisionAPI.Apply(child_prim)
                         mesh_collision_api.CreateCollisionEnabledAttr(True)
                         physx_mesh_collision = PhysxSchema.PhysxCollisionAPI.Apply(child_prim)
-                        # Try to add convex hull collision
+                        
+                        # For dynamic rigid bodies, ONLY use convex hull (never triangle mesh)
                         try:
                             convex_hull_api = PhysxSchema.PhysxConvexHullCollisionAPI.Apply(child_prim)
                             print(f"    Added convex hull collision for {product_id}")
+                            collision_applied = True
                         except Exception as e:
-                            # Fallback to mesh collision if convex hull fails
-                            try:
-                                mesh_collision = PhysxSchema.PhysxMeshCollisionAPI.Apply(child_prim)
-                                print(f"    Added mesh collision for {product_id}")
-                            except Exception as e2:
-                                print(f"    Warning: Could not add collision to {product_id}: {e2}")
+                            print(f"    Warning: Could not add convex hull collision to {product_id}: {e}")
+                
+                # If no mesh collision could be applied, try using a simple box approximation
+                if not collision_applied:
+                    try:
+                        # Apply collision directly to the product prim using box approximation
+                        collision_api.CreateCollisionEnabledAttr(True)
+                        print(f"    Using default collision approximation for {product_id}")
+                    except Exception as e:
+                        print(f"    Warning: Could not add any collision to {product_id}: {e}")
             
             # Set initial velocities if provided
             if "velocity" in product_data:

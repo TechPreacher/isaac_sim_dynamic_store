@@ -1,24 +1,24 @@
 {
     "_06_mustard_bottle_05": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/006_mustard_bottle.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/006_mustard_bottle.usd",
         "translate": [-25.086469880134647, 46.04343291587653, 0.9831003337342358],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_06_mustard_bottle_06": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/006_mustard_bottle.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/006_mustard_bottle.usd",
         "translate": [-25.097005175579373, 46.236204296072046, 0.9831003337342274],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_06_mustard_bottle_08": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/006_mustard_bottle.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/006_mustard_bottle.usd",
         "translate": [-25.108974151148644, 46.43321083479538, 0.9831003337342358],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_10_potted_meat_can_24": {
         "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/010_potted_meat_can.usd",
@@ -43,28 +43,28 @@
     },
     "_07_tuna_fish_can_61": {
         "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/007_tuna_fish_can.usd",
-        "translate": [-25.10408201181237, 45.12872643158456, 0.8812623099010872],
+        "translate": [-25.10408201181237, 45.12872643158456, 0.88081],
         "orient": [0.5, -0.5, 0.5, -0.5],
         "scale": [1.3333334, 1.3333334, 1.3333334],
         "physics_enabled": true
     },
     "_07_tuna_fish_can_62": {
         "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/007_tuna_fish_can.usd",
-        "translate": [-25.108974151148644, 45.28407841269332, 0.8812623033304866],
+        "translate": [-25.108974151148644, 45.28407841269332, 0.88081],
         "orient": [0.5, -0.5, 0.5, -0.5],
         "scale": [1.3333334, 1.3333334, 1.3333334],
         "physics_enabled": true
     },
     "_07_tuna_fish_can_63": {
         "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/007_tuna_fish_can.usd",
-        "translate": [-25.10408201181237, 45.428384443723154, 0.8812623099011412],
+        "translate": [-25.10408201181237, 45.428384443723154, 0.88081],
         "orient": [0.5, -0.5, 0.5, -0.5],
         "scale": [1.3333334, 1.3333334, 1.3333334],
         "physics_enabled": true
     },
     "_07_tuna_fish_can_64": {
         "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/007_tuna_fish_can.usd",
-        "translate": [-25.108974151148644, 45.57446350380658, 0.8812623033304906],
+        "translate": [-25.108974151148644, 45.57446350380658, 0.88081],
         "orient": [0.5, -0.5, 0.5, -0.5],
         "scale": [1.3333334, 1.3333334, 1.3333334],
         "physics_enabled": true
@@ -97,46 +97,46 @@
         "velocity": [-0.004166908, -0.0036812094, -0.0014256913]
     },
     "_03_cracker_box_03": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/003_cracker_box.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/003_cracker_box.usd",
         "translate": [-25.089131422445735, 44.480783161966876, 2.061636572559885],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_03_cracker_box_04": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/003_cracker_box.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/003_cracker_box.usd",
         "translate": [-25.089131422445707, 44.73967814589616, 2.061636572559931],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_03_cracker_box_05": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/003_cracker_box.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/003_cracker_box.usd",
         "translate": [-25.08913142244565, 44.999162018393456, 2.061636572559899],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_05_tomato_soup_can_12": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/005_tomato_soup_can.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/005_tomato_soup_can.usd",
         "translate": [-25.13039479318357, 45.496833812098515, 1.9914948821441776],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_05_tomato_soup_can_13": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/005_tomato_soup_can.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/005_tomato_soup_can.usd",
         "translate": [-25.137969118012506, 45.659482863260706, 1.9878743145899174],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_05_tomato_soup_can_14": {
-        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned_Physics/005_tomato_soup_can.usd",
+        "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/005_tomato_soup_can.usd",
         "translate": [-25.145552442841443, 45.82212915452936, 1.9842537470356572],
         "rotate": [-90, 90, 0],
         "scale": [1.3333334, 1.3333334, 1.3333334],
-        "physics_enabled": false
+        "physics_enabled": true
     },
     "_25_mug": {
         "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/025_mug.usd",
