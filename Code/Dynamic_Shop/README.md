@@ -17,13 +17,29 @@ This tool solves the problem of having to manually place products in a shop simu
 
 ```
 Dynamic_Shop/
+├── .vscode/                       # VS Code workspace settings
+├── .venv/                         # Python virtual environment (optional)
 ├── assets/
 │   ├── Shop Minimal Empty.usda    # Empty shop environment (required)
 │   ├── Shop Minimal.usda          # Populated shop (reference)
-│   └── product_data.txt           # Extracted product data (generated)
+│   ├── product_data.json          # JSON product data (required)
+│   └── product_data.txt           # Legacy text format (reference)
+├── docs/
+│   ├── PHYSICS_TROUBLESHOOTING.md # Physics debugging guide
+│   ├── RANDOMIZATION_FEATURE.md   # Randomization feature documentation
+│   └── README_UPDATE_SUMMARY.md   # Documentation update history
+├── helpers/
+│   ├── analyze_physics.py         # Physics settings analysis
+│   ├── count_products.py          # Product counting utility
+│   ├── run_all.py                 # Run all helper scripts
+│   ├── test_and_usage.py          # Complete test suite
+│   ├── test_product_data.py       # JSON data validation
+│   ├── test_randomization.py      # Randomization testing
+│   ├── verify_data.py             # Data integrity checks
+│   ├── verify_readme.py           # Documentation verification
+│   └── README.md                  # Helper scripts documentation
+├── __pycache__/                   # Python bytecode cache (auto-generated)
 ├── dynamic_shop_placer.py         # Main IsaacSim script
-├── verify_data.py                 # Standalone verification script
-├── test_and_usage.py              # Detailed usage instructions
 └── README.md                      # This file
 ```
 
@@ -33,6 +49,9 @@ Dynamic_Shop/
 - **Python 3.7+** (with Isaac Sim's Python environment)
 - **USD Python bindings** (included with Isaac Sim)
 - **Internet connection** (for loading YCB dataset assets)
+- **Required files**:
+  - `assets/Shop Minimal Empty.usda` (empty shop environment)
+  - `assets/product_data.json` (product placement data)
 
 ## 🚀 Quick Start
 
@@ -215,6 +234,27 @@ if product_data.get("physics_enabled", False):
 
 ## 🧪 Testing & Verification
 
+### Helper Scripts Directory
+The `helpers/` directory contains comprehensive testing and verification tools:
+
+```bash
+# Run all verification tests at once
+python helpers/run_all.py
+
+# Individual verification scripts
+python helpers/test_product_data.py    # JSON data validation
+python helpers/verify_data.py          # Comprehensive data checks
+python helpers/analyze_physics.py      # Physics settings analysis
+python helpers/count_products.py       # Product inventory count
+
+# Testing specific features
+python helpers/test_randomization.py   # Test rotation randomization
+python helpers/test_and_usage.py       # Complete test suite
+python helpers/verify_readme.py        # Documentation validation
+```
+
+**Note**: Helper scripts run independently and do NOT require Isaac Sim.
+
 ### Verification Scripts
 ```bash
 # Check data integrity and file structure
@@ -279,6 +319,14 @@ if self.debug:
 3. **Add your products** to PRODUCT_DATA
 4. **Test thoroughly** with verify_data.py
 5. **Submit pull request** with description
+
+## 📚 Additional Documentation
+
+The `docs/` directory contains specialized documentation:
+
+- **`PHYSICS_TROUBLESHOOTING.md`** - Comprehensive physics debugging guide
+- **`RANDOMIZATION_FEATURE.md`** - Detailed randomization feature documentation  
+- **`README_UPDATE_SUMMARY.md`** - Documentation update history and changes
 
 ## 📚 References
 
