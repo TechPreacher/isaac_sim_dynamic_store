@@ -13,6 +13,8 @@ This tool solves the problem of having to manually place products in a shop simu
 5. **Sets initial velocities** for dynamic objects
 6. **🎲 Randomizes 3 products** with random rotations for variety each run
 
+![Store shelf](./assets/store-v1.png)
+
 ## 📁 Project Structure
 
 ```
